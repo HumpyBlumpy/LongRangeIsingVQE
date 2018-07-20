@@ -3,7 +3,7 @@
   Optimization Algorithm and Variational Quantum Eigensolvers.
   Authors  : Stephen Jordan (Microsoft QuARC) and Aniruddha Bapat (QuICS) 
   Year     : 2018
-  Citation : If you use this code in your research, please cite it.
+  Usage    : Please see LICENSE.
   -------------------------------------------------------------------------*/
 
 #include <stdio.h>
