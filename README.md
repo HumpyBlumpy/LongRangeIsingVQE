@@ -1,5 +1,5 @@
 # LongRangeIsingVQE
-## Author: Aniruddha Bapat
+## Author: [Aniruddha Bapat](https://github.com/quristic),  Stephen Jordan
 ### Date: 07/20/2018
 
 This repository contains code that can be used to simulate the evolution of a quantum state on n qubits under
