@@ -114,3 +114,11 @@ double signedqaoa1energy(ham *H, double beta, double gamma, double *s);
 // Entanglement entropy of a pure state, with a cut after the kth qubit
 double entent(state * psi, int k);
 
+//The expecation of the global spin-z operator squared
+double Jz2(state *psi);
+
+//The expecation of the global spin-z operator squared
+double Jz(state *psi);
+
+//The expecation of the global spin-z operator squared
+double JzVar(state *psi);

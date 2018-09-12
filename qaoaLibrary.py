@@ -13,6 +13,7 @@ import scipy.sparse as sp
 from scipy.optimize import basinhopping, minimize
 import itertools as it
 from numpy import pi, sqrt
+#from ctypes import wintypes
 
 # Load c functions in qaoa
 # I think this is OS-dependent. Create the appropriate shared c object
@@ -20,6 +21,7 @@ from numpy import pi, sqrt
 
 
 qc      = cdll.LoadLibrary('./lib2local-qaoa.so')
+#qc      = windll.LoadLibrary('./lib2local-qaoa.dll')
 
 # States and Hamiltonian structs, ctyped into python
 class state(Structure):
@@ -54,6 +56,7 @@ qc.expectH.restype  = c_double
 qc.overlap.resype   = c_double
 qc.energy.restype   = c_double
 qc.qaoa1energy.restype = c_double
+qc.JzVar.restype  = c_double
 
 # Initialize state and hamiltonian
 def initialize(n):
@@ -108,6 +111,14 @@ def expectQAOAp(psi, H, betagamma):
     qc.evolveQAOA(ppsi, pH, (c_double * p)(*betagamma[:p]), (c_double * p)(*betagamma[p:]), p)
     return qc.expectH(psi, pH)
 
+def JzVarQAOAp(psi, H, betagamma):
+    ppsi = pointer(psi)
+    pH   = pointer(H)
+    qc.uniform(ppsi)
+    p = len(betagamma)/2
+    qc.evolveQAOA(ppsi, pH, (c_double * p)(*betagamma[:p]), (c_double * p)(*betagamma[p:]), p)
+    return qc.JzVar(ppsi)
+
 # return squared overlap with the ground state vectors
 def overlapQAOAp(psi, H, betagamma, vec):
     ppsi = pointer(psi)
@@ -126,7 +137,23 @@ def overlapQAOAp(psi, H, betagamma, vec):
 def optQAOA(psi, H, pmax, typeOfOpt='BFGS'):
     ppsi = pointer(psi)
     pH   = pointer(H)
-    fOpt = lambda bg: expectQAOAp(psi, H, bg.tolist())
+    fOpt = lambda bg: JzVarQAOAp(psi, H, bg.tolist())
+    bg0  = 0.5*np.ones(2)
+    bgCur= bg0   
+    for p in range(1,pmax+1):
+        bgNew  = np.concatenate((bgCur[:p-1], [bgCur[p-1]], bgCur[p-1:], [bgCur[-1]]))
+        opt    = minimize(fOpt, bg0 if p==1 else bgNew, method=typeOfOpt)
+        bgCur  = opt.x
+        E      = expectQAOAp(psi, H, bgCur.tolist())
+        #if E!=opt.fun: return "Error: Energy expectation does not match optimized value"
+    return (bgCur, E) 
+
+# Perform an inductive local optimization of QAOA angles. The code returns
+# optimal angles and energy. Psi is now the result of the optimal evolution.
+def JzVarOptQAOA(psi, H, pmax, typeOfOpt='BFGS'):
+    ppsi = pointer(psi)
+    pH   = pointer(H)
+    fOpt = lambda bg: JzVarQAOAp(psi, H, bg.tolist())
     bg0  = 0.5*np.ones(2)
     bgCur= bg0   
     for p in range(1,pmax+1):

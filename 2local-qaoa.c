@@ -3,7 +3,7 @@
   Optimization Algorithm and Variational Quantum Eigensolvers.
   Authors  : Stephen Jordan (Microsoft QuARC) and Aniruddha Bapat (QuICS) 
   Year     : 2018
-  Usage    : Please see LICENSE.
+  Citation : If you use this code in your research, please cite it.
   -------------------------------------------------------------------------*/
 
 #include <stdio.h>
@@ -536,4 +536,31 @@ double entent(state * psi, int k){
   
   
   return ent;
+}
+
+//The eigenvalue of the global spin-z operator squared
+//x stores the bit string
+double Jz2(state *psi){
+  double sum = 0, sq;
+  int i,n = psi->n;
+  for(i=0;i<psi->N;i++){
+    sq = HammingWeight(i,n) - 0.5*n;
+    sum += sq*sq*(psi->realcur[i]*psi->realcur[i]+psi->imagcur[i]*psi->imagcur[i]);
+  }
+  return sum;
+}
+
+//The eigenvalue of the global spin-z operator squared
+//x stores the bit string
+double Jz(state *psi){
+  double sum = 0;
+  int i,n = psi->n;
+  for(i=0;i<psi->N;i++){
+    sum += (HammingWeight(i,n) - 0.5*n)*(psi->realcur[i]*psi->realcur[i]+psi->imagcur[i]*psi->imagcur[i]);
+  }
+  return sum;
+}
+
+double JzVar(state *psi){
+  return Jz2(psi)-Jz(psi)*Jz(psi);
 }
