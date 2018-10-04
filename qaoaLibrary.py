@@ -57,6 +57,8 @@ qc.overlap.resype   = c_double
 qc.energy.restype   = c_double
 qc.qaoa1energy.restype = c_double
 qc.JzVar.restype  = c_double
+qc.Jz.restype  = c_double
+qc.Jz2.restype  = c_double
 
 # Initialize state and hamiltonian
 def initialize(n):

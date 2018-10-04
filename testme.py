@@ -3,10 +3,9 @@ from qaoaLibrary import *
 import sys
 import time
 
-n=3
+n=10
 # Initialize state and hamiltonian
 psi, H = initialize(n)
-qc.JzVar.restype  = c_double
 
 # Hamiltonian Input
 # OPTION 1: Generate long-range power-law Hamiltonian
@@ -16,7 +15,6 @@ qc.JzVar.restype  = c_double
 
 ppsi = pointer(psi)
 qc.uniform(ppsi)
-ppsi = pointer(psi)
 print(qc.Jz(ppsi))
 print(qc.Jz2(ppsi))
 print(qc.JzVar(ppsi))

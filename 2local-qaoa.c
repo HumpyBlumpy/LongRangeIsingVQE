@@ -538,8 +538,7 @@ double entent(state * psi, int k){
   return ent;
 }
 
-//The eigenvalue of the global spin-z operator squared
-//x stores the bit string
+//The expectation value of the global spin-z operator squared
 double Jz2(state *psi){
   double sum = 0, sq;
   int i,n = psi->n;
@@ -550,8 +549,7 @@ double Jz2(state *psi){
   return sum;
 }
 
-//The eigenvalue of the global spin-z operator squared
-//x stores the bit string
+//The expectation value of the global spin-z operator squared
 double Jz(state *psi){
   double sum = 0;
   int i,n = psi->n;
