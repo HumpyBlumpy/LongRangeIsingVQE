@@ -34,6 +34,7 @@ void printbits(int x, int n);
 
 //Print out the quantum state vector
 void printvec(state psi);
+void printvecbuf(state psi);
 
 //Return the Euclidean norm of the state vector
 double norm(state psi);
@@ -117,8 +118,17 @@ double entent(state * psi, int k);
 //The expecation of the global spin-z operator squared
 double Jz2(state *psi);
 
-//The expecation of the global spin-z operator squared
+//The expecation of the global spin-z operator 
 double Jz(state *psi);
 
-//The expecation of the global spin-z operator squared
+//The variance of the global spin-z operator 
 double JzVar(state *psi);
+
+//The expecation of the global spin-x operator squared
+double Jx2(state *psi);
+
+//The expecation of the global spin-x operator 
+double Jx(state *psi);
+
+//The variance of the global spin-x operator
+double JxVar(state *psi);

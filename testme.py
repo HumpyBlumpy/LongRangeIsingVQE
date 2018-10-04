@@ -15,7 +15,11 @@ psi, H = initialize(n)
 
 ppsi = pointer(psi)
 qc.uniform(ppsi)
+ppsi = pointer(psi)
+
 print(qc.Jz(ppsi))
 print(qc.Jz2(ppsi))
 print(qc.JzVar(ppsi))
-
+print(qc.Jx(ppsi))
+print(qc.Jx2(ppsi))
+print(qc.JxVar(ppsi))

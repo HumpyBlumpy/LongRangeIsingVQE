@@ -59,6 +59,9 @@ qc.qaoa1energy.restype = c_double
 qc.JzVar.restype  = c_double
 qc.Jz.restype  = c_double
 qc.Jz2.restype  = c_double
+qc.JxVar.restype  = c_double
+qc.Jx.restype  = c_double
+qc.Jx2.restype  = c_double
 
 # Initialize state and hamiltonian
 def initialize(n):

@@ -29,7 +29,16 @@ void printvec(state psi) {
     printf("):\t%e\t+i%e\t%e\n", psi.realcur[i], psi.imagcur[i], p);
   }
 }
-
+void printvecbuf(state psi) {
+  int i;
+  double p;
+  for(i = 0; i < psi.N; i++) {
+    p = psi.realbuf[i]*psi.realbuf[i] + psi.imagbuf[i]*psi.imagbuf[i];
+    printf("%i(", i);
+    printbits(i, psi.n);
+    printf("):\t%e\t+i%e\t%e\n", psi.realbuf[i], psi.imagbuf[i], p);
+  }
+}
 //Return the Euclidean norm of the state vector
 double norm(state psi) {
   double val;
@@ -63,15 +72,16 @@ void Hadamard(state *psi) {
     for(j = 0; j < psi->N; j++) {
       if((j&(1<<i)) == 0) {
         psi->realbuf[j] = root*(psi->realcur[j] + psi->realcur[j^(1<<i)]);
-	psi->imagbuf[j] = root*(psi->imagcur[j] + psi->imagcur[j^(1<<i)]);
+	      psi->imagbuf[j] = root*(psi->imagcur[j] + psi->imagcur[j^(1<<i)]);
       }
       else {
         psi->realbuf[j] = root*(-psi->realcur[j] + psi->realcur[j^(1<<i)]);
-	psi->imagbuf[j] = root*(-psi->imagcur[j] + psi->imagcur[j^(1<<i)]);
+	      psi->imagbuf[j] = root*(-psi->imagcur[j] + psi->imagcur[j^(1<<i)]);
       }
     }
     swapbuf(psi); //swap cur with buf
   }
+
 }
 
 //Computes the Z2 inner product between bitstrings a and b of length n.
@@ -549,16 +559,43 @@ double Jz2(state *psi){
   return sum;
 }
 
-//The expectation value of the global spin-z operator squared
+//The expectation value of the global spin-z operator 
 double Jz(state *psi){
   double sum = 0;
   int i,n = psi->n;
   for(i=0;i<psi->N;i++){
-    sum += (HammingWeight(i,n) - 0.5*n)*(psi->realcur[i]*psi->realcur[i]+psi->imagcur[i]*psi->imagcur[i]);
+    sum += (0.5*n-HammingWeight(i,n))*(psi->realcur[i]*psi->realcur[i]+psi->imagcur[i]*psi->imagcur[i]);
   }
   return sum;
 }
 
 double JzVar(state *psi){
   return Jz2(psi)-Jz(psi)*Jz(psi);
+}
+
+//The expectation value of the global spin-x operator 
+double Jx(state *psi){
+  double result;
+  Hadamard(psi);
+  result = Jz(psi);
+  Hadamard(psi);
+  return result;
+}
+
+//The expectation value of the global spin-x operator squared
+double Jx2(state *psi){
+  double result;
+  Hadamard(psi);
+  result = Jz2(psi);
+  Hadamard(psi);
+  return result;
+}
+
+//The variance of the global spin-x operator
+double JxVar(state *psi){
+  double result;
+  Hadamard(psi);
+  result = JzVar(psi);
+  Hadamard(psi);
+  return result;
 }
