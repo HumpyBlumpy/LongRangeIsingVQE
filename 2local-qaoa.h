@@ -45,6 +45,8 @@ void swapbuf(state *psi);
 //Perform a Hadamard transform on the n qubits in O(NlogN) time.
 void Hadamard(state *psi);
 
+void yHadamard(state *psi);
+
 //Computes the Z2 inner product between bitstrings a and b of length n.
 int Z2inner(int A, int B, int n);
 

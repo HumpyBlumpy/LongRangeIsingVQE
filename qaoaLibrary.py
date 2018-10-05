@@ -63,6 +63,7 @@ qc.JxVar.restype  = c_double
 qc.Jx.restype  = c_double
 qc.Jx2.restype  = c_double
 
+
 # Initialize state and hamiltonian
 def initialize(n):
      psi     = state()
@@ -156,18 +157,14 @@ def optQAOA(psi, H, pmax, typeOfOpt='BFGS'):
 # Perform an inductive local optimization of QAOA angles. The code returns
 # optimal angles and energy. Psi is now the result of the optimal evolution.
 def JzVarOptQAOA(psi, H, pmax, typeOfOpt='BFGS'):
-    ppsi = pointer(psi)
-    pH   = pointer(H)
-    fOpt = lambda bg: JzVarQAOAp(psi, H, bg.tolist())
+    fOpt = lambda bg: -JzVarQAOAp(psi, H, bg.tolist())
     bg0  = 0.5*np.ones(2)
     bgCur= bg0   
     for p in range(1,pmax+1):
         bgNew  = np.concatenate((bgCur[:p-1], [bgCur[p-1]], bgCur[p-1:], [bgCur[-1]]))
         opt    = minimize(fOpt, bg0 if p==1 else bgNew, method=typeOfOpt)
         bgCur  = opt.x
-        E      = expectQAOAp(psi, H, bgCur.tolist())
-        #if E!=opt.fun: return "Error: Energy expectation does not match optimized value"
-    return (bgCur, E) 
+    return bgCur
 
 def optQAOAglobal(psi, H, p, Nit=10, Temp=1.0, Tmax=20):
     ppsi = pointer(psi)

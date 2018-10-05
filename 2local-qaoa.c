@@ -84,6 +84,29 @@ void Hadamard(state *psi) {
 
 }
 
+//Perform a "y" Hadamard transform on the n qubits in O(NlogN) time.
+// Diagonalizes sigma_y
+void yHadamard(state *psi) {
+  int i,j;
+  double root;
+  root = 1.0/sqrt(2.0);
+  for(i = 0; i < psi->n; i++) {
+    //apply a Hadamard gate to the ith qubit and write result into buffer
+    for(j = 0; j < psi->N; j++) {
+      if((j&(1<<i)) == 0) {
+        psi->realbuf[j] = root*(psi->realcur[j] + psi->realcur[j^(1<<i)]);
+	      psi->imagbuf[j] = root*(psi->imagcur[j] + psi->imagcur[j^(1<<i)]);
+      }
+      else {
+        psi->realbuf[j] = root*(-psi->realcur[j] + psi->realcur[j^(1<<i)]);
+	      psi->imagbuf[j] = root*(-psi->imagcur[j] + psi->imagcur[j^(1<<i)]);
+      }
+    }
+    swapbuf(psi); //swap cur with buf
+  }
+
+}
+
 //Computes the Z2 inner product between bitstrings a and b of length n.
 int Z2inner(int A, int B, int n) {
   int i;
